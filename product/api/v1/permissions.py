@@ -13,9 +13,8 @@ class IsStudentOrIsAdmin(BasePermission):
 
 
 class ReadOnlyOrIsAdmin(BasePermission):
+    """Доступ только администраторам, остальным — только на чтение."""
 
     def has_permission(self, request, view):
-        return request.user.is_staff or request.method in SAFE_METHODS
-
-    def has_object_permission(self, request, view, obj):
+        """Проверка прав доступа."""
         return request.user.is_staff or request.method in SAFE_METHODS

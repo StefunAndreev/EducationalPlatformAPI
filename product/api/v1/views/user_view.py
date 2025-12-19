@@ -7,6 +7,8 @@ User = get_user_model()
 
 
 class UserViewSet(viewsets.ModelViewSet):
+    """ViewSet для работы с пользователями."""
+
     queryset = User.objects.all()
     serializer_class = CustomUserSerializer
     http_method_names = ["get", "head", "options"]

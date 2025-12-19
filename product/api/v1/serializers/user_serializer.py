@@ -51,3 +51,13 @@ class SubscriptionSerializer(serializers.ModelSerializer):
             'course_title',
         )
         read_only_fields = ('created_at',)
+
+    def validate(self, attrs):
+        """Проверка, что подписка у пользователя на курс уже не существует."""
+        user = attrs.get('user')
+        course = attrs.get('course')
+        if Subscription.objects.filter(user=user, course=course).exists():
+            raise serializers.ValidationError(
+                'Вы уже подписаны на этот курс.'
+            )
+        return attrs

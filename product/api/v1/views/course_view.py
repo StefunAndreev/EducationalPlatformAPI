@@ -17,11 +17,12 @@ from users.models import Balance, Subscription
 
 
 class LessonViewSet(viewsets.ModelViewSet):
-    """Уроки."""
+    """ViewSet для работы с уроками."""
 
     permission_classes = (IsStudentOrIsAdmin,)
 
     def get_serializer_class(self):
+        """Функция для выбора сериализатора."""
         if self.action in ['list', 'retrieve']:
             return LessonSerializer
         return CreateLessonSerializer
@@ -31,18 +32,21 @@ class LessonViewSet(viewsets.ModelViewSet):
         return get_object_or_404(Course, id=self.kwargs.get('course_id'))
 
     def perform_create(self, serializer):
+        """Создает новый урок."""
         serializer.save(course=self.get_сourse())
 
     def get_queryset(self):
+        """Получает список всех уроков."""
         return self.get_сourse().lessons.all()
 
 
 class GroupViewSet(viewsets.ModelViewSet):
-    """Группы."""
+    """ViewSet для работы с группами."""
 
     permission_classes = (permissions.IsAdminUser,)
 
     def get_serializer_class(self):
+        """Функция для выбора сериализатора."""
         if self.action in ['list', 'retrieve']:
             return GroupSerializer
         return CreateGroupSerializer
@@ -52,19 +56,22 @@ class GroupViewSet(viewsets.ModelViewSet):
         return get_object_or_404(Course, id=self.kwargs.get('course_id'))
 
     def perform_create(self, serializer):
+        """Создает новую группу."""
         serializer.save(course=self.get_сourse())
 
     def get_queryset(self):
+        """Получает список всех групп."""
         return self.get_сourse().groups.all()
 
 
 class CourseViewSet(viewsets.ModelViewSet):
-    """Курсы."""
+    """ViewSet для работы с курсами."""
 
     queryset = Course.objects.all()
     permission_classes = (ReadOnlyOrIsAdmin,)
 
     def get_serializer_class(self):
+        """Функция для выбора сериализатора."""
         if self.action in ['list', 'retrieve']:
             return CourseSerializer
         elif self.action == 'pay':
@@ -86,15 +93,7 @@ class CourseViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
         user = request.user
-        if Subscription.objects.filter(user=user, course=course).exists():
-            return Response(
-                {'error': 'Вы уже подписаны на этот курс'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-        balance, created = Balance.objects.get_or_create(
-            user=user,
-            defaults={'bonuses': 0}
-        )
+        balance = Balance.objects.get(user=user)
         if balance.bonuses < course.price:
             return Response(
                 {
@@ -105,12 +104,8 @@ class CourseViewSet(viewsets.ModelViewSet):
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        subscription_data = {
-            'user': user.id,
-            'course': course.id
-        }
         subscription_serializer = SubscriptionSerializer(
-            data=subscription_data,
+            data={'course': course.id},
             context={'request': request}
         )
         if not subscription_serializer.is_valid():

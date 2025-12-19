@@ -1,15 +1,21 @@
 from django.db import models
 
+from courses.constants import (
+    MAX_AUTHOR_LENGHT,
+    MAX_TITLE_LENGHT,
+    MAX_LINK_LENGHT,
+)
+
 
 class Course(models.Model):
     """Модель продукта - курса."""
 
     author = models.CharField(
-        max_length=250,
+        max_length=MAX_AUTHOR_LENGHT,
         verbose_name='Автор',
     )
     title = models.CharField(
-        max_length=250,
+        max_length=MAX_TITLE_LENGHT,
         verbose_name='Название',
     )
     start_date = models.DateTimeField(
@@ -34,11 +40,11 @@ class Lesson(models.Model):
     """Модель урока."""
 
     title = models.CharField(
-        max_length=250,
+        max_length=MAX_TITLE_LENGHT,
         verbose_name='Название',
     )
     link = models.URLField(
-        max_length=250,
+        max_length=MAX_LINK_LENGHT,
         verbose_name='Ссылка',
     )
     course = models.ForeignKey(
@@ -61,7 +67,7 @@ class Group(models.Model):
     """Модель группы."""
 
     title = models.CharField(
-        max_length=250,
+        max_length=MAX_TITLE_LENGHT,
         verbose_name='Название',
     )
     course = models.ForeignKey(

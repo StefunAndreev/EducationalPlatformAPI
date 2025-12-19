@@ -1,8 +1,8 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
-from django.utils.functional import cached_property
 
 from courses.models import Course
+from users.constants import MAX_BONUSES_LENGTH, MAX_EMAIL_LENGTH
 
 
 class CustomUser(AbstractUser):
@@ -10,7 +10,7 @@ class CustomUser(AbstractUser):
 
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
-        max_length=250,
+        max_length=MAX_EMAIL_LENGTH,
         unique=True
     )
     USERNAME_FIELD = 'email'
@@ -41,7 +41,7 @@ class Balance(models.Model):
     )
     bonuses = models.PositiveIntegerField(
         verbose_name='Бонусы',
-        default=1000,
+        default=MAX_BONUSES_LENGTH,
         help_text='Бонусы пользователя'
     )
 
