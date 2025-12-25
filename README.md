@@ -60,9 +60,3 @@
 
     http://127.0.0.1:8000/api/v1/swagger/
     http://127.0.0.1:8000/api/v1/redoc/
-
-
-# Авторы и контакты: 📧
-
-### *Стефан Андреев* *[GitHub](https://github.com/StefunAndreev)* *[Telegram](https://t.me/Fo1ugen)*
-
